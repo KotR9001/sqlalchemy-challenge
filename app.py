@@ -19,10 +19,12 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 
-engine = create_engine("sqlite:///C:/Users/bjros/OneDrive/Desktop/KU_Data_Analytics_Boot_Camp/Homework Assignments/Homework Week 10/sqlalchemy-challenge/hawaii.sqlite")
+#Method to Resolve Thread Issue Found on https://stackoverflow.com/questions/48218065/programmingerror-sqlite-objects-created-in-a-thread-can-only-be-used-in-that-sa/51147168
+engine = create_engine("sqlite:///C:/Users/bjros/OneDrive/Desktop/KU_Data_Analytics_Boot_Camp/Homework Assignments/Homework Week 10/sqlalchemy-challenge/hawaii.sqlite", connect_args={'check_same_thread': False})
 
 # reflect an existing database into a new model
 Base = automap_base()
+
 # reflect the tables
 Base.prepare(engine, reflect=True)
 
@@ -147,48 +149,41 @@ from flask import Flask, jsonify, Response
 #Create App
 app = Flask(__name__)
 
-#Create the Precipitation List
-prcp_list = []
-
-#Create the Stations List
-stations_list = []
-
-#Create the Temperature List for the Most Active Station from the Last Year
-temp_list = []
-
 #Define the Start & End Dates
-start = 3/18/2012
-end = 3/18/2017
+start = dt.datetime.strptime('3/18/2012', '%m/%d/%Y')
+end = dt.datetime.strptime('3/18/2013', '%m/%d/%Y')
 
 #Create the Homepage
-app.route("/")
+@app.route("/")
 def home():
     return(
         f"Here is the homepage</br>."
         f"---------------------------------</br>"
         f"Here is the directory of routes</br>."
         f"-----------------------------------------</br>"
-        f"Here is the page with precipitation data</br>."
+        f"Here is the page with precipitation data</br>"
         f"/api/v1.0/precipitation</br>"
         f"----------------------------------------</br>"
-        f"Here is the page with the stations list</br>." 
+        f"Here is the page with the stations list</br>" 
         f"/api/v1.0/stations</br>"
         f"-----------------------------------------------------------------------------------------------</br>"
-        f"Here is the page with the temperature data from the most active station from the previous year</br>."
+        f"Here is the page with the temperature data from the most active station from the previous year</br>"
         f"/api/v1.0/tobs</br>"
         f"------------------------------------------------------------------------------------------------------------------------------</br>"
-        f"Here is the list of minimum, average, and maximum temperature values from the specified start date to the last available date</br>."
-        f"/api/v1.0/<start></br>"
+        f"Here is the list of minimum, average, and maximum temperature values from the specified start date to the last available date</br>"
+        f"/api/v1.0/start</br>"
         f"------------------------------------------------------------------------------------------------------------------------------</br>"
-        f"Here is the list of minimum, average, and maximum temperature values from the specified start date to the specified end date</br>."
-        f"/api/v1.0/<start>/<end>"
+        f"Here is the list of minimum, average, and maximum temperature values from the specified start date to the specified end date</br>"
+        f"/api/v1.0/start/end"
     )
 
 #Create the Precipitation Page
-app.route("/api/v1.0/precipitation")
+@app.route("/api/v1.0/precipitation")
 def precipitation():
+    #Create the Precipitation List
+    prcp_list = []
     #session = Session(engine)
-    for date, prcp in session.query(Measurement.date, Measurement.prcp):
+    for date, prcp in session.query(Measurement.date, Measurement.prcp).all():
         prcp_dict = {}
         prcp_dict["date"] = date
         prcp_dict["prcp"] = prcp
@@ -198,10 +193,12 @@ def precipitation():
         
 
 #Create the Stations Page
-app.route("/api/v1.0/stations")
+@app.route("/api/v1.0/stations")
 def station():
+    #Create the Stations List
+    stations_list = []
     #session = Session(engine)
-    for station in session.query(Measurement.station):
+    for station in session.query(Measurement.station).group_by(Measurement.station).all():
         stations_dict = {}
         stations_dict["station"] = station
         stations_list.append(stations_dict)
@@ -210,10 +207,12 @@ def station():
     
 
 #Create the Temperature Page for the Most Active Station from the Last Year
-app.route("/api/v1.0/tobs")
+@app.route("/api/v1.0/tobs")
 def tobs():
+    #Create the Temperature List for the Most Active Station from the Last Year
+    temp_list = []
     #session = Session(engine)
-    for date, tobs in session.query(Measurement.date, Measurement.tobs):
+    for date, tobs in session.query(Measurement.date, Measurement.tobs).all():
         temp_dict = {}
         temp_dict["date"] = date
         temp_dict["tobs"] = tobs
@@ -222,7 +221,7 @@ def tobs():
     return jsonify(temp_list)
 
 #Create the List of Minimum, Average, and Maximum Temperature Values from the Specified Start Date Where the End Date is Not Specified
-app.route("/api/v1.0/<start>")
+@app.route("/api/v1.0/start")
 def extremes1():
     #session = Session(engine)
     #Perform Queries for Minimum, Average, & Maximum Temperature Values where the End Date is not Specified in the URL
@@ -233,12 +232,12 @@ def extremes1():
     avg_temp1 = session.query(func.round(func.avg(Measurement.tobs))).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=last_date1).all()
     print(f"The average temperature at the most active station was {avg_temp1}oC.")
     #session.close()
-    return jsonify([f"The minimum temperature in the date range is: {low_temp1}oF.",
-                    f"The average temperature in the date range is: {avg_temp1}oF.",
-                    f"The maximum temperature in the date range is: {high_temp1}oF."])
+    return(f"The minimum temperature in the date range is: {low_temp1}oF.</br>"
+           f"The average temperature in the date range is: {avg_temp1}oF.</br>"
+           f"The maximum temperature in the date range is: {high_temp1}oF.</br>")
 
 #Create the List of Minimum, Average, and Maximum Temperature Values from the Specified Start Date to the Specified End Date
-app.route("/api/v1.0/<start>/<end>")
+@app.route("/api/v1.0/start/end")
 def extremes2():
     #session = Session(engine)
     #Perform Queries for Minimum, Average, & Maximum Temperature Values where the End Date is Specified in the URL
@@ -249,9 +248,9 @@ def extremes2():
     avg_temp2 = session.query(func.round(func.avg(Measurement.tobs))).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=end).all()
     print(f"The average temperature at the most active station was {avg_temp2}oC.")
     #session.close()
-    return jsonify([f"The minimum temperature in the date range is: {low_temp2}oF.",
-                    f"The average temperature in the date range is: {avg_temp2}oF.",
-                    f"The maximum temperature in the date range is: {high_temp2}oF."])
+    return (f"The minimum temperature in the date range is: {low_temp2}oF.</br>"
+            f"The average temperature in the date range is: {avg_temp2}oF.</br>"
+            f"The maximum temperature in the date range is: {high_temp2}oF.</br>")
 
 #Create the URL
 if __name__ == "__main__":
