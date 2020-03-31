@@ -135,6 +135,10 @@ temp_df = temp_df.sort_index().reset_index()
 temp_df['Date'] = pd.DataFrame(temp_df['Date'].tolist())
 temp_df['Temperature'] = pd.DataFrame(temp_df['Temperature'].tolist())
 
+#Close All Existing Sessions
+#Method Found at https://docs.sqlalchemy.org/en/13/orm/session_api.html
+#session.close_all()
+
 ###Create New Code for the Climate App
 #Import Flask & climate_starter notebook
 #Method to Allow Import of Python Files Found at https://stackoverflow.com/questions/4142151/how-to-import-the-class-within-the-same-directory-or-sub-directory
@@ -155,22 +159,6 @@ temp_list = []
 #Define the Start & End Dates
 start = 3/18/2012
 end = 3/18/2017
-
-#Perform Queries for Minimum, Average, & Maximum Temperature Values where the End Date is not Specified in the URL
-low_temp1 = session.query(func.min(Measurement.tobs)).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=last_date1).all()
-print(f"The lowest recorded temperature at the most active station was {low_temp1}oC.")
-high_temp1 = session.query(func.max(Measurement.tobs)).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=last_date1).all()
-print(f"The highest recorded temperature at the most active station was {high_temp1}oC.")
-avg_temp1 = session.query(func.round(func.avg(Measurement.tobs))).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=last_date1).all()
-print(f"The average temperature at the most active station was {avg_temp1}oC.")
-
-#Perform Queries for Minimum, Average, & Maximum Temperature Values where the End Date is Specified in the URL
-low_temp2 = session.query(func.min(Measurement.tobs)).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=end).all()
-print(f"The lowest recorded temperature at the most active station was {low_temp2}oC.")
-high_temp2 = session.query(func.max(Measurement.tobs)).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=end).all()
-print(f"The highest recorded temperature at the most active station was {high_temp2}oC.")
-avg_temp2 = session.query(func.round(func.avg(Measurement.tobs))).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=end).all()
-print(f"The average temperature at the most active station was {avg_temp2}oC.")
 
 #Create the Homepage
 app.route("/")
@@ -199,37 +187,52 @@ def home():
 #Create the Precipitation Page
 app.route("/api/v1.0/precipitation")
 def precipitation():
+    #session = Session(engine)
     for date, prcp in session.query(Measurement.date, Measurement.prcp):
         prcp_dict = {}
         prcp_dict["date"] = date
         prcp_dict["prcp"] = prcp
         prcp_list.append(prcp_dict)
+    #session.close()
     return jsonify(prcp_list)
         
 
 #Create the Stations Page
 app.route("/api/v1.0/stations")
 def station():
+    #session = Session(engine)
     for station in session.query(Measurement.station):
         stations_dict = {}
         stations_dict["station"] = station
         stations_list.append(stations_dict)
+    #session.close()
     return jsonify(stations_list)
     
 
 #Create the Temperature Page for the Most Active Station from the Last Year
 app.route("/api/v1.0/tobs")
 def tobs():
+    #session = Session(engine)
     for date, tobs in session.query(Measurement.date, Measurement.tobs):
         temp_dict = {}
         temp_dict["date"] = date
         temp_dict["tobs"] = tobs
         temp_list.append(temp_dict)
+    #session.close()
     return jsonify(temp_list)
 
 #Create the List of Minimum, Average, and Maximum Temperature Values from the Specified Start Date Where the End Date is Not Specified
 app.route("/api/v1.0/<start>")
-def extremes1():    
+def extremes1():
+    #session = Session(engine)
+    #Perform Queries for Minimum, Average, & Maximum Temperature Values where the End Date is not Specified in the URL
+    low_temp1 = session.query(func.min(Measurement.tobs)).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=last_date1).all()
+    print(f"The lowest recorded temperature at the most active station was {low_temp1}oC.")
+    high_temp1 = session.query(func.max(Measurement.tobs)).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=last_date1).all()
+    print(f"The highest recorded temperature at the most active station was {high_temp1}oC.")
+    avg_temp1 = session.query(func.round(func.avg(Measurement.tobs))).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=last_date1).all()
+    print(f"The average temperature at the most active station was {avg_temp1}oC.")
+    #session.close()
     return jsonify([f"The minimum temperature in the date range is: {low_temp1}oF.",
                     f"The average temperature in the date range is: {avg_temp1}oF.",
                     f"The maximum temperature in the date range is: {high_temp1}oF."])
@@ -237,6 +240,15 @@ def extremes1():
 #Create the List of Minimum, Average, and Maximum Temperature Values from the Specified Start Date to the Specified End Date
 app.route("/api/v1.0/<start>/<end>")
 def extremes2():
+    #session = Session(engine)
+    #Perform Queries for Minimum, Average, & Maximum Temperature Values where the End Date is Specified in the URL
+    low_temp2 = session.query(func.min(Measurement.tobs)).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=end).all()
+    print(f"The lowest recorded temperature at the most active station was {low_temp2}oC.")
+    high_temp2 = session.query(func.max(Measurement.tobs)).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=end).all()
+    print(f"The highest recorded temperature at the most active station was {high_temp2}oC.")
+    avg_temp2 = session.query(func.round(func.avg(Measurement.tobs))).filter(func.date(Measurement.date)>=start).filter(func.date(Measurement.date)<=end).all()
+    print(f"The average temperature at the most active station was {avg_temp2}oC.")
+    #session.close()
     return jsonify([f"The minimum temperature in the date range is: {low_temp2}oF.",
                     f"The average temperature in the date range is: {avg_temp2}oF.",
                     f"The maximum temperature in the date range is: {high_temp2}oF."])
