@@ -44,7 +44,7 @@ from sqlalchemy import create_engine, func
 # In[6]:
 
 
-engine = create_engine("sqlite:///C:/Users/bjros/OneDrive/Desktop/KU_Data_Analytics_Boot_Camp/Homework Assignments/Homework Week 10/sqlalchemy-challenge/hawaii.sqlite")
+engine = create_engine("sqlite:///C:/Users/bjros/OneDrive/Desktop/KU_Data_Analytics_Boot_Camp/Homework Assignments/Homework Week 10/sqlalchemy-challenge/SQLite File/hawaii.sqlite")
 
 
 # In[7]:
@@ -165,7 +165,7 @@ plt.xticks(np.arange(0, 12, step=1), precipitation_df['Date'], rotation=90)
 plt.show()
 
 #Save the Figure
-plt.savefig("Precipitation.png")
+plt.savefig("../Pictures/Precipitation.png")
 
 
 # In[19]:
@@ -280,7 +280,7 @@ plt.ylabel('Frequency')
 plt.show()
 
 #Save the Figure
-plt.savefig("Temperature_Distribution.png")
+plt.savefig("../Pictures/Temperature_Distribution.png")
 
 
 # In[25]:
