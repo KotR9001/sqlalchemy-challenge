@@ -11,6 +11,7 @@ to return temperature information from a selected date range.<br />
 ![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/32b1e281-346c-4328-89ef-af4c3f1bef22)<br />
 -Used SQLAlchemy automap_base() to reflect database tables into classes and save a reference to those classes called Station and Measurement.<br />
 ![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/7bccb5d8-c223-4e72-8418-76e6c2dfad60)<br />
+<br />
 <b>Precipitation Analysis</b><br />
 -Designed a query to retrieve the last 12 months of precipitation data.<br />
 ![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/874c74f9-11de-49b7-ab1e-73028d2db484)<br />
