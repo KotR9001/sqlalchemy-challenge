@@ -33,7 +33,7 @@ to return temperature information from a selected date range.<br />
 ![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/46dd093c-ea85-4a1b-988b-7aaaf4059d6e)<br />
 -Designed a query to retrieve the last 12 months of temperature observation data (TOBS).<br />
 -Filtered by the station with the highest number of observations.<br />
-![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/8f952870-9ac4-434f-9de5-94524585d327)
+![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/8f952870-9ac4-434f-9de5-94524585d327)<br />
 -Ploted the results as a histogram with bins=12.<br />
 ![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/5575b2c0-c809-4697-a2f3-af608064615d)<br />
 <br />
