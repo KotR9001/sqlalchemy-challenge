@@ -6,7 +6,7 @@ to return temperature information from a selected date range.<br />
 <br />
 <b>Climate Analysis</b><br />
 -Used the provided starter notebook and hawaii.sqlite files to complete a climate analysis and data exploration.<br />
--Chose a start date and end date for your trip. Make sure that the selected vacation range is approximately 3-15 days total.<br />
+-Chose a start date and end date for the trip. Make sure that the selected vacation range is approximately 3-15 days total.<br />
 -Used SQLAlchemy create_engine to connect to your sqlite database.<br />
 ![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/32b1e281-346c-4328-89ef-af4c3f1bef22)<br />
 -Used SQLAlchemy automap_base() to reflect database tables into classes and save a reference to those classes called Station and Measurement.<br />
@@ -18,7 +18,7 @@ to return temperature information from a selected date range.<br />
 ![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/6da79e61-3815-40c4-b32d-1075e685505f)<br />
 -Loaded the query results into a Pandas DataFrame and set the index to the date column.<br />
 -Plotted the precipitation over time for the last 12 months of precipitation data.<br />
-![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/99830bfc-f33d-4346-a84d-6ee37f8b7bd4)
+![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/99830bfc-f33d-4346-a84d-6ee37f8b7bd4)<br />
 -Sorted the DataFrame values by date.<br />
 ![image](https://github.com/KotR9001/sqlalchemy-challenge/assets/57807780/145efab6-ed1d-418a-9b37-35e95513a836)<br />
 -Used Pandas to print the summary statistics for the precipitation data.<br />
